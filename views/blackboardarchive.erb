@@ -1,0 +1,15 @@
+<html>
+    <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+      <h1> <%= "Blackboard Course Archive Files" %> </h1>
+      <% if @archivedcourses %>
+      <% @archivedcourses.each do |course|  %> 
+       <p>  
+      <%= course.Course_ID %> <a href =
+      <%= "files/#{course.Course_ID}"  %> > Download </a>
+       </p>
+      <% end %>
+      <% else  %>
+      <%= "No archived courses found for #{@Instructor}" %>
+      <% end %>
+      </body>
+</html>
