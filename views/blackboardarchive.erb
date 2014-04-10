@@ -1,11 +1,11 @@
 <html>
     <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
       <h1> <%= "Blackboard Course Archive Files" %> </h1>
-      <% if @archivedcourses %>
+      <% if @archivedcourses.length > 0 %>
       <% @archivedcourses.each do |course|  %> 
        <p>  
       <%= course.Course_ID %> <a href =
-      <%= "files/#{course.Course_ID}"  %> > Download </a>
+      <%= "#{course.archiveurl}"  %> > Download </a>
        </p>
       <% end %>
       <% else  %>

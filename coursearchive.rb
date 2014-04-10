@@ -1,7 +1,9 @@
 require 'sinatra'
 require 'ims/lti'
 require 'oauth/request_proxy/rack_request'
-require "sinatra/activerecord"
+require 'sinatra/activerecord'
+require 'uri'
+require 'net/http'
 
 enable :sessions
 set :protection, :except => :frame_options
@@ -22,6 +24,18 @@ ActiveRecord::Base.establish_connection(
 
 
 class Course < ActiveRecord::Base
+  def archiveurl
+    "http://golden.usfca.edu/files/ArchiveFile_#{self.Course_ID}.zip"
+  end
+  
+  def downloadexists?
+    uri = URI("#{self.archiveurl}")
+
+  request = Net::HTTP.new uri.host
+  response= request.request_head uri.path
+  response.code.to_i == 200
+  end
+  
 end
 
 
@@ -82,10 +96,10 @@ post '/lti_tool' do
     @secret = signature.send(:secret)
   
   @Instructor = params['custom_canvas_user_login_id']
-  @courses = Course.find(:all, :conditions => {:Instructor_ID => @Instructor}).uniq!{|course| course.Course_ID}
-  if @courses
-  @archivedcourses =  @courses.select {|course| File.exists?('files/ArchiveFile_' + course.Course_ID + '.zip')}
-  end
+  @courses = (Course.where Instructor_ID: @Instructor).uniq{|course| course.Course_ID}
+    if @courses
+      @archivedcourses =  @courses.select {|course| course.downloadexists?}
+    end
     
   erb :blackboardarchive
 
@@ -132,10 +146,6 @@ post '/proxy_launch' do
   @oauth_signature = signature.signature
 
   erb :proxy_launch
-end
-
-get '/files/:course_id' do
-  send_file 'files/ArchiveFile_' + "#{params[:course_id]}" + '.zip', :disposition => 'attachment'
 end
 
 get '/tool_config.xml' do
