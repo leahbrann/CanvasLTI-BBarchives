@@ -1,9 +1,12 @@
 require 'sinatra'
+require 'dotenv'
 require 'ims/lti'
 require 'oauth/request_proxy/rack_request'
 require 'sinatra/activerecord'
 require 'uri'
 require 'net/http'
+
+Dotenv.load
 
 enable :sessions
 set :protection, :except => :frame_options
@@ -15,8 +18,6 @@ configure :development do
   set :port, 3000 
 end
 
-
-
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
   :database =>  'blackboard.db'
@@ -25,7 +26,7 @@ ActiveRecord::Base.establish_connection(
 
 class Course < ActiveRecord::Base
   def archiveurl
-    "http://golden.usfca.edu/files/ArchiveFile_#{self.Course_ID}.zip"
+    "#{ENV['ARCHIVE_FILE_PATH']}#{self.Course_ID}.zip"
   end
   
   def downloadexists?
