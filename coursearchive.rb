@@ -14,27 +14,6 @@ set :protection, :except => :frame_options
 
 OAUTH_10_SUPPORT = true
 
-configure :development do   
-  set :bind, '0.0.0.0'   
-  set :port, 3000 
-
-  ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database =>  'blackboard.db'
-)
-
-end
-
-
-configure :production do
-ActiveRecord::Base.establish_connection(
-  :adapter => 'postgresql',
-  :database =>  'blackboard',
-  :username => <%= "#{ENV['PG_USER']}" %>,
-  :password => <%= "#{ENV['PG_PASS']}" %>
-)
-end
-
 class Course < ActiveRecord::Base
   def archiveurl
     "#{ENV['ARCHIVE_FILE_PATH']}#{self.Course_ID}.zip"
