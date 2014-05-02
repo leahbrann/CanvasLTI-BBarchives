@@ -16,7 +16,7 @@ OAUTH_10_SUPPORT = true
 
 class Course < ActiveRecord::Base
   def archiveurl
-    "#{ENV['ARCHIVE_FILE_PATH']}#{self.Course_ID}.zip"
+    "#{ENV['ARCHIVE_FILE_PATH']}#{self.course_id}.zip"
   end
   
   def downloadexists?
@@ -87,7 +87,7 @@ post '/lti_tool' do
     @secret = signature.send(:secret)
   
   @Instructor = params['custom_canvas_user_login_id']
-  @courses = (Course.where Instructor_ID: @Instructor).uniq{|course| course.Course_ID}
+  @courses = (Course.where instructor_id: @Instructor).uniq{|course| course.course_id}
     if @courses
       @archivedcourses =  @courses.select {|course| course.downloadexists?}
     end
