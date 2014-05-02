@@ -1,1 +1,4 @@
 *.sqlite3
+*.sql
+*.txt
+*.env

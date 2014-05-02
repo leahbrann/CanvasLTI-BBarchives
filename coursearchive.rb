@@ -5,6 +5,7 @@ require 'oauth/request_proxy/rack_request'
 require 'sinatra/activerecord'
 require 'uri'
 require 'net/http'
+require './environments'
 
 Dotenv.load
 
@@ -16,13 +17,23 @@ OAUTH_10_SUPPORT = true
 configure :development do   
   set :bind, '0.0.0.0'   
   set :port, 3000 
-end
 
-ActiveRecord::Base.establish_connection(
+  ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
   :database =>  'blackboard.db'
 )
 
+end
+
+
+configure :production do
+ActiveRecord::Base.establish_connection(
+  :adapter => 'postgresql',
+  :database =>  'blackboard',
+  :username => <%= "#{ENV['PG_USER']}" %>,
+  :password => <%= "#{ENV['PG_PASS']}" %>
+)
+end
 
 class Course < ActiveRecord::Base
   def archiveurl
