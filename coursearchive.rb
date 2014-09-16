@@ -22,16 +22,16 @@ class Course < ActiveRecord::Base
   def downloadexists?
     uri = URI("#{self.archiveurl}")
 
-  request = Net::HTTP.new uri.host
-  response= request.request_head uri.path
-  response.code.to_i == 200
+    request = Net::HTTP.new(uri.host, uri.port)
+    response= request.request_head uri.path
+    response.code.to_i == 200
   end
   
 end
 
 
 # the consumer keys/secrets
-$oauth_creds = {"test" => "secret"}
+$oauth_creds = {"#{ENV['APPKEY']}" => "#{ENV['APPSECRET']}"}
 
 def show_error(message)
   @message = message
