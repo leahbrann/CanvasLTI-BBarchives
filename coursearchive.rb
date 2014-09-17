@@ -87,9 +87,9 @@ post '/lti_tool' do
     @secret = signature.send(:secret)
   
   @Instructor = params['custom_canvas_user_login_id']
-  @courses = (Course.where instructor_id: @Instructor).uniq{|course| course.course_id}
-    if @courses
-      @archivedcourses =  @courses.select {|course| course.downloadexists?}
+  courses = (Course.where instructor_id: @Instructor).distinct.order(:course_id)
+    if courses
+      @archivedcourses =  courses.select{|course| course.downloadexists?}
     end
     
   erb :blackboardarchive
@@ -142,10 +142,10 @@ end
 get '/tool_config.xml' do
   host = request.scheme + "://" + request.host_with_port
   url = (params['signature_proxy_test'] ? host + "/signature_test" : host + "/lti_tool")
-  tc = IMS::LTI::ToolConfig.new(:title => "Blackboard course archives", :launch_url => url)
+  tc = IMS::LTI::ToolConfig.new(:title => "Blackboard Archives", :launch_url => url)
   tc.description = "Provides access to instructor Blackboard archives."
   tc.set_ext_params("canvas.instructure.com", {"privacy_level" => "public"})
-  tc.set_ext_param("canvas.instructure.com", "user_navigation", {"enabled" => "true", "text" => "Blackboard Course Archives"})
+  tc.set_ext_param("canvas.instructure.com", "user_navigation", {"enabled" => "true", "text" => "Blackboard Archives"})
   headers 'Content-Type' => 'text/xml'
   tc.to_xml(:indent => 4)
 end

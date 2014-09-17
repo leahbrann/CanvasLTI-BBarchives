@@ -4,8 +4,8 @@
       <% if @archivedcourses.length > 0 %>
       <% @archivedcourses.each do |course|  %> 
        <p>  
-      <%= course.course_id %> <a href =
-      <%= "#{course.archiveurl}"  %> > Download </a>
+       <a href =
+      <%= "#{course.archiveurl}"  %> > <%= course.course_id %> </a>
        </p>
       <% end %>
       <% else  %>

@@ -1,15 +1,6 @@
-configure :development do   
-
-  ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database =>  'blackboard.db'
-)
-
-end
-
-configure :production do
+configure :production, :development do
   # Database connection
-  db = URI.parse(ENV['DATABASE_URL'] || 'postgres://localhost/blackboard')
+  db = URI.parse(ENV['DATABASE_URL'] || 'postgres://localhost/lkbrann')
  
   ActiveRecord::Base.establish_connection(
     :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
